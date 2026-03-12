@@ -1,7 +1,1 @@
-{
-    "files.associations": {
-        "iosfwd": "cpp",
-        "iostream": "cpp",
-        "random": "cpp"
-    }
-}
+﻿{"editor.tabCompletion":"off","emmet.triggerExpansionOnTab":false,"editor.inlineSuggest.enabled":false,"github.copilot.inlineSuggest.enable":false,"editor.acceptSuggestionOnEnter":"on"}
