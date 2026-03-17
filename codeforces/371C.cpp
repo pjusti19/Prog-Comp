@@ -22,15 +22,15 @@ int main() {
   long long perC = count(recipe.begin(), recipe.end(), 'C');
 
   auto canMake = [&](long long x) -> bool {
-    __int128 needB = (__int128)perB * x;
-    __int128 needS = (__int128)perS * x;
-    __int128 needC = (__int128)perC * x;
+    long long needB = (long long)perB * x;
+    long long needS = (long long)perS * x;
+    long long needC = (long long)perC * x;
 
-    __int128 buyB = needB - haveB; if (buyB < 0) buyB = 0;
-    __int128 buyS = needS - haveS; if (buyS < 0) buyS = 0;
-    __int128 buyC = needC - haveC; if (buyC < 0) buyC = 0;
+    long long buyB = needB - haveB; if (buyB < 0) buyB = 0;
+    long long buyS = needS - haveS; if (buyS < 0) buyS = 0;
+    long long buyC = needC - haveC; if (buyC < 0) buyC = 0;
 
-    __int128 cost = buyB * priceB + buyS * priceS + buyC * priceC;
+    long long cost = buyB * priceB + buyS * priceS + buyC * priceC;
     return cost <= budget;
   };
 
