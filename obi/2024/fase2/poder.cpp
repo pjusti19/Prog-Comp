@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -10,19 +10,11 @@ int main() {
 
   int n, m;
   cin >> n >> m;
-  vector<int> poderes(n * m);
-  for(int &poder : poderes) cin >> poder;
+  vector<vector<int>> poderes(n, vector<int>(m, 0));
+  for(int i = 0; i < n; i++)
+    for(int j = 0; j < n; j++)
+      cin >> poderes[i][j];
 
-  sort(poderes.begin(), poderes.end());
-  for(int i = 1; i < n*m; i++){
-    poderes[i]+= poderes[i-1]
-  }
-  
-
-
-  for (int i = 0; i < n; i++)
-    for (int j = 0; j < m; j++) {
-    }
 
   return 0;
 }
