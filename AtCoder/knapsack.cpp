@@ -6,7 +6,6 @@ using namespace std;
 #define endl '\n'
 
 typedef long long ll;
-const ll LINF = 0x3f3f3f3f3f3f3f3f;
 
 int N, W;
 vector<int> w, v;
@@ -14,7 +13,7 @@ vector<int> w, v;
 ll memo[110][100010];
 
 ll dp(int i, int s){
-    if(s < 0) return -LINF;
+    if(s < 0) return LLONG_MIN;
     if(i == N) return 0;
     ll &p = memo[i][s];
     if(p != -1) return p;
