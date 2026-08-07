@@ -4,8 +4,6 @@ using namespace std;
 
 #define _ ios::sync_with_stdio(false); cin.tie(nullptr); cout.tie(nullptr);
 #define endl '\n'
-#define f first
-#define s second
 
 typedef long long ll;
 
