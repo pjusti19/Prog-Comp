@@ -1,6 +1,7 @@
 //#include <bits/stdc++.h>
 #include <iostream> 
 #include <algorithm>
+#include <numeric>
 
 using namespace std;
 
@@ -12,41 +13,67 @@ typedef long long ll;
 const int INF = 0x3f3f3f3f;
 const ll LINF = 0x3f3f3f3f3f3f3f3fll;
 
-int main(){ _ 
-    int n, m; cin >> n >> m;
-    vector<vector<int>> grid (n, vector<int>(m));
-    for(int i = 0; i < n; i++)
-      for(int j = 0; j < m; j++) cin >> grid[i][j];
+vector<int> id, sz;
+vector<ll> poder;
+vector<vector<int>> cand;
 
-    int dx[4] = {1, 0, -1, 0};
-    int dy[4] = {0, 1, 0 , -1};
+int find(int p) { return id[p] = (id[p] == p? p : find(id[p]));}
+
+void une(int p, int q){
+    p = find(p), q = find(q);
+    if(p == q) return;
+    if(sz[p] > sz[q]) swap(p, q);
+    id[p] = q; sz[q]+=sz[p];
+    poder[q] += poder[p];
+    if(cand[p].size() > cand[q].size()) swap(cand[p], cand[q]);
+    for(int&c:cand[p]) cand[q].push_back(c);
+    cand[p].clear();
+}
+
+int main(){ _
+    int n, m; cin >> n >> m;
+    vector<tuple<ll,int,int>> herois;
+    poder = vector<ll> (n*m+1), cand = vector<vector<int>> (n*m+1);
     for(int i = 0; i < n; i++){
-      for(int j = 0; j < m; j++){
-        priority_queue<tuple<ll,int,int>> pq;
-        vector<vector<bool>> visited(n, vector<bool>(m));
-        bool eh_primeiro = true; 
-        ll poder = grid[i][j];
-        visited[i][j] = true;
-        pq.push({-grid[i][j], i, j});
-        while(!pq.empty()){
-          auto [v, l, c] = pq.top();
-          v = -v;
-          pq.pop();
-          if(!eh_primeiro){
-            if(poder >= v) poder+=v;
-            else break;
-          } 
-          for(int k = 0; k < 4; k++){
-            int n_l = l + dy[k], n_c = c + dx[k];
-            if(n_l < 0 or n_l >= n or n_c < 0 or n_c >= m or visited[n_l][n_c]) continue;
-            visited[n_l][n_c] = true;
-            pq.push({-grid[n_l][n_c], n_l, n_c});
-          }
-          if(eh_primeiro) eh_primeiro = false;
+        for(int j = 0; j < m; j++){
+            ll x; cin >> x;
+            int k = i * m + j;
+            poder[k] = x;
+            cand[k].push_back(k);
+            herois.push_back({x, i, j});
         }
-        if(j== m-1) cout << poder << endl;
-        else cout << poder << " ";
-      }
+    }
+    sort(herois.begin(), herois.end());
+    id = vector<int> (n*m), sz = vector<int> (n*m, 1);
+    iota(id.begin(), id.end(), 0);
+    vector<vector<bool>> ativos(n, vector<bool>(m, false));
+    vector<vector<ll>> ans(n, vector<ll>(m, 0));
+    int dx[4] = {1, 0 , -1, 0}, dy[4] = {0, 1, 0, -1};
+    for(auto [p, l, c] : herois){
+        ativos[l][c] = true;
+        int atual = l * m + c;
+        for(int i = 0; i < 4; i++){
+            int n_l = l + dy[i], n_c = c + dx[i];
+            int n_k = n_l*m+n_c;
+            if(n_l < 0 or n_l >= n or n_c < 0 or n_c >= m or !ativos[n_l][n_c]) continue;
+            int viz = find(n_k);
+            if(p > poder[viz]){
+                for(int&can:cand[viz]) ans[can/m][can%m] = poder[viz];
+                cand[viz].clear();
+            } 
+            une(atual, n_k);
+        }
+    }
+    for(int i = 0; i < n*m; i++){
+        int r = find(i);
+        for(int&can:cand[r])ans[can/m][can%m] = poder[r];
+        cand[r].clear();
+    }
+    for(int i = 0; i < n; i++){
+        for(int j = 0; j < m; j++){
+            if(j == m-1) cout << ans[i][j] << endl;
+            else cout << ans[i][j] << " ";
+        }
     }
     return 0;
 }
