@@ -1,7 +1,7 @@
-//#include <bits/stdc++.h>
-#include <iostream> 
-#include <algorithm>
-#include <numeric>
+#include <bits/stdc++.h>
+// #include <iostream> 
+// #include <algorithm>
+// #include <numeric>
 
 using namespace std;
 
@@ -32,11 +32,12 @@ int main(){ _
         int k; cin >> k;
         vector<int> group(k);
         for(int&g:group) cin >> g;
-        for(int j = 0; j < k-1; j++) une(group[j], group[j+1]);
+        for(int j = 0; j < k-1; j++) 
+            if(find(group[j])!= find(group[j+1])) une(group[j], group[j+1]);
     }
     for(int i = 1; i < n+1; i++){
-        if(i == n) cout << sz[id[i]] << endl;
-        else cout << sz[id[i]] << " ";
+        if(i == n) cout << sz[find(i)] << endl;
+        else cout << sz[find(i)] << " ";
     }
     return 0;
 }
