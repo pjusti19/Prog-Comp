@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -33,7 +33,7 @@ pair<ll,ll> build(int p, int l, int r){
 }
 
 pair<ll, ll> query(int a, int b, int p, int l, int r){
-    if(l <= a and b <= r) return seg[p];
+    if(a <= l and b >= r) return seg[p];
     if(b < l or a > r) return {-LINF, LINF};
     int m = (l+r)/2;
     pair<ll,ll> e = query(a, b, 2*p, l, m);
