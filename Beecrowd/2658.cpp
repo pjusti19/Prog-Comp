@@ -52,8 +52,6 @@ void apply(int p, int x){
 
 void push(int p, int l, int r){
     if(lazy[p] == 0 or l == r) return;
-
-    int m = (l+r)/2;
     apply(2*p, lazy[p]);
     apply(2*p+1, lazy[p]);
     lazy[p] = 0;
