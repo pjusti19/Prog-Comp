@@ -17,31 +17,36 @@ int main(){ _
     int n, m, k; cin >> n >> m >> k;
     vector<int> precos(k+1);
     for(int i = 1; i < k+1; i++) cin >> precos[i];
-    vector<vector<pair<int,int>>> adj(n+1);
+    vector<unordered_map<int,vector<int>>> adj(n+1);
     for(int i = 0; i < m; i++){
         int v, u, t; cin >> v >> u >> t;
-        adj[u].push_back({v, t});
-        adj[v].push_back({u, t});
+        adj[u][t].push_back(v);
+        adj[v][t].push_back(u);
     }
     int a, b; cin >> a >> b;
-    vector<int> dist(n+1,INF);
-    vector<unordered_map<int, bool>> hist(n+1);
+    vector<unordered_map<int, bool>> visited(n+1);
     priority_queue<tuple<int,int,int>> pq;
+    vector<bool> trocou(n+1, false);
     pq.push({-0, a, 0});
     while(!pq.empty()){
         auto [c, idx, tipo] = pq.top();
         pq.pop();
         c = -c;
-        if(hist[idx].count(tipo) > 0 and dist[idx] <= c) continue;
-        dist[idx] = c;
-        hist[idx][tipo] = true;
-        if(idx == b) {cout << dist[idx] << endl; return 0;}
-        for(auto [n_idx, n_tipo] : adj[idx]){
-            int n_c = n_tipo == tipo? 0: precos[n_tipo];
-            if(!(hist[n_idx].count(n_tipo) > 0 and dist[n_idx] < n_c+c)){ pq.push({-(n_c+c), n_idx, n_tipo});}
+        if(visited[idx].count(tipo) > 0) continue;
+        visited[idx][tipo] = true;
+        if(idx == b) {cout << c << endl; return 0;}
+
+        if(adj[idx].count(tipo) > 0)
+            for(int n_idx : adj[idx][tipo]) pq.push({-c, n_idx, tipo});
+
+        if(!trocou[idx]){
+            trocou[idx] = true;
+            for(auto mp : adj[idx]){
+                int n_tipo = mp.first;
+                for(int n_idx:adj[idx][n_tipo]) pq.push({-(precos[n_tipo]+c), n_idx, n_tipo});
+            }
         }
     }
-
     cout << -1 << endl;
 
     return 0;
