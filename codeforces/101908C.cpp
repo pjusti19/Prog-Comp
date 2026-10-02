@@ -1,4 +1,4 @@
-#include <iostream>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -11,24 +11,32 @@ const int INF = 0x3f3f3f3f;
 const ll LLINF = 0x3f3f3f3f3f3f3f3fll;
 const int MAX = 2*1e5+1;
 
-int h, v;
+ll h, v;
+unordered_map<ll,ll> ump_v, ump_h;
+ll BIT_H[MAX], BIT_V[MAX];
 
-ll BIT[MAX];
-
-void update(int i, ll x){
-    for(; i > 0; i += i & -i) BIT[i] += x;
+void update(int i, ll x, ll* BIT){
+    for(; i <= MAX; i += i & -i) BIT[i] += x;
 }
 
-ll prefix(int i){
+ll prefix(int i, ll* BIT){
     ll ret = 0;
     for(; i > 0; i -= i & -i) ret += BIT[i];
     return ret;
 }
 
-ll intersect(vector<ll>& v){
-    for(int i = v.size()-1; i >= 0; i--){
-        update(v[i], 1);
+ll intersect(vector<ll>& vec, ll* BIT, unordered_map<ll,ll>& ump){
+    ll ret = 0;
+    int cont = 1;
+    vector<ll> aux = vec;
+    sort(aux.begin(), aux.end());
+    aux.erase(unique(aux.begin(), aux.end()), aux.end());
+    for(ll& a:aux) ump[a] = cont++;
+    for(int i = vec.size()-1; i >= 0; i--){
+        ret += prefix(ump[vec[i]], BIT);
+        update(ump[vec[i]], 1, BIT);
     }
+    return ret;
 }
 
 int main(){ _ 
@@ -43,11 +51,11 @@ int main(){ _
         ll a, b; cin >> a >> b;
         vs[i] = {a,b};
     }
-    sort(hs.begin(), hs.end());
-    sort(vs.begin(), vs.end());
+    sort(hs.begin(), hs.end()); sort(vs.begin(), vs.end());
     vector<ll> fins_h(h), fins_v(v); 
     for(int i = 0; i < h; i++) fins_h[i] = hs[i].second;
     for(int i = 0; i < v; i++) fins_v[i] = vs[i].second;
-    ll intersecoes = h*v + intersect(fins_h) + intersect(fins_v);
+    ll intersecoes = h*v + intersect(fins_h, BIT_H, ump_h) + intersect(fins_v, BIT_V, ump_v);
+    cout << 1 + h + v + intersecoes << endl;
     return 0;
 }
