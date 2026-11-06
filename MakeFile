@@ -1,0 +1,32 @@
+CXX = g++
+MAKEFILE := $(abspath $(lastword $(MAKEFILE_LIST)))
+ROOT     := $(dir $(MAKEFILE))
+TEMPLATE := $(ROOT)Snippets/template.cpp
+
+CXXFLAGS = -I$(ROOT) -fsanitize=address,undefined -fno-omit-frame-pointer -g -Wall -Wshadow -std=c++17 \
+           -Wno-unused-result -Wno-sign-compare -Wno-char-subscripts -Wno-unused-const-variable
+
+.SILENT:
+
+.PHONY: rm
+
+$(MAKEFILE_LIST): ;
+Makefile makefile GNUmakefile: ;
+
+FORCE: ;
+
+rm:
+	find "$(ROOT)" -name '*.cpp' | while IFS= read -r f; do \
+		b="$${f%.cpp}"; \
+		if [ -f "$$b" ] && [ -x "$$b" ]; then rm -f "$$b"; fi; \
+		rm -rf "$$b.dSYM"; \
+	done
+
+%.cpp:
+	cp $(TEMPLATE) $@
+
+%: %.cpp FORCE
+	if [ ! -x $@ ] || [ $< -nt $@ ]; then \
+		$(CXX) $(CXXFLAGS) $< -o $@ || exit 1; \
+	fi
+	./$@
